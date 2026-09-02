@@ -172,14 +172,14 @@ const INSURANCE_OPTIONS = [
 ];
 const ESIM_TASK = { link: 'https://www.holafly.com', linkLabel: 'Ver eSIM de Holafly', steps: [
   { id: 'es1', text: 'Instala la eSIM antes de salir de España (se activa al llegar)' },
-  { id: 'es2', text: 'Así tienes datos desde que aterrizas' },
-  { id: 'es3', text: 'Úsala solo los primeros días — luego cambia a SIM local, más barata' },
+  { id: 'es2', text: 'Así tienes datos desde que aterrizas, sin depender del wifi del aeropuerto' },
+  { id: 'es3', text: 'Úsala solo los primeros días — luego cambia a SIM/eSIM local, mucho más barata a largo plazo' },
 ]};
 const SIMS = [
-  { name: 'Spark', tag: 'Mejor cobertura rural', link: 'https://www.spark.co.nz', detail: 'La red con más alcance fuera de ciudades. Oficina en el aeropuerto de Auckland.' },
-  { name: 'One NZ', tag: 'Buena cobertura urbana', link: 'https://one.nz', detail: 'Antes Vodafone NZ. Buenos planes prepago.' },
-  { name: '2degrees', tag: 'Normalmente el más barato', link: 'https://www.2degrees.nz', detail: 'Planes prepago muy competitivos.' },
-  { name: 'Skinny', tag: 'Sub-marca de Spark', link: 'https://www.skinny.co.nz', detail: 'Prepago muy simple y barato.' },
+  { name: 'Spark', tag: 'Mejor cobertura rural · con eSIM', link: 'https://www.spark.co.nz', detail: 'La red con más alcance fuera de ciudades. Oficina en el aeropuerto de Auckland. Ofrece tanto SIM física como eSIM.' },
+  { name: 'One NZ', tag: 'Buena cobertura urbana · con eSIM', link: 'https://one.nz', detail: 'Antes Vodafone NZ. Buenos planes prepago, también en eSIM.' },
+  { name: '2degrees', tag: 'Normalmente el más barato · con eSIM', link: 'https://www.2degrees.nz', detail: 'Planes prepago muy competitivos, también en eSIM.' },
+  { name: 'Skinny', tag: 'Sub-marca de Spark · con eSIM', link: 'https://www.skinny.co.nz', detail: 'Prepago muy simple y barato, corre sobre la red de Spark. También en eSIM.' },
 ];
 const SIM_STEPS = [
   { id: 's1', text: 'Decide operador según tu plan (rural si harás roadtrip)' },
@@ -290,6 +290,11 @@ const WHERE_TO_BUY_VAN = [
   { name: 'Trade Me', detail: 'El "eBay" de NZ, también para vehículos.' },
   { name: '"Car fair" de los domingos', detail: 'Ferias presenciales — ves y pruebas varias el mismo día.' },
   { name: 'Travel Cars', detail: 'Otra opción habitual entre viajeros.' },
+];
+const VAN_RENTAL_COMPANIES = [
+  { name: 'Jucy', link: 'https://www.jucy.co.nz', detail: 'De las más conocidas entre mochileros, furgos ya equipadas para dormir.' },
+  { name: 'Travellers Autobarn', link: 'https://www.travellers-autobarn.co.nz', detail: 'Buena relación precio/equipamiento, varias categorías de furgo.' },
+  { name: 'Go Rentals', link: 'https://www.gorentals.co.nz', detail: 'Otra opción habitual, coches y furgos.' },
 ];
 const CAR_INSURERS = ['AA Insurance (la más común)', 'AMI', 'Cove Insurance', 'Tower Insurance'];
 const FERRY_OPTIONS = [
@@ -741,6 +746,7 @@ function FirstDaysModule({ checked, toggle }) {
     if (item.id === 'esim') return <TaskBlock icon={Smartphone} title={null} task={ESIM_TASK} checked={checked} toggle={toggle} prefix="esim" />;
     if (item.id === 'sim') return (
       <div>
+        <InfoBanner icon={Info}>Los operadores locales también tienen eSIM, no solo SIM física — la diferencia con Holafly no es "eSIM sí o no", sino cuándo la activas: Holafly la compras y activas desde España antes de volar; la eSIM de un operador de NZ normalmente la das de alta ya en el país (necesitas pasaporte para registrarla). Por eso Holafly cubre las primeras horas, y luego cambias a un operador local — más barato para el resto del viaje.</InfoBanner>
         <div className="rounded-xl p-4 mb-3" style={{ border: '1px solid var(--tussock)' }}>{SIM_STEPS.map((s) => <MiniCheckItem key={s.id} item={s} checked={!!checked[`sim-${s.id}`]} onToggle={() => toggle(`sim-${s.id}`)} />)}</div>
         <div className="space-y-2">{SIMS.map((s) => <ProviderCard key={s.name} p={s} />)}</div>
       </div>
@@ -914,9 +920,12 @@ function DocsDetail({ checked, toggle }) {
 function BuyVanDetail() {
   return (
     <div>
-      <SubHeading icon={ShoppingBag}>Dónde comprar</SubHeading>
+      <SubHeading icon={ShoppingBag}>Comprar de segunda mano</SubHeading>
       <div className="space-y-2 mb-4">{WHERE_TO_BUY_VAN.map((w) => <div key={w.name} className="rounded-xl p-3" style={{ border: '1px solid var(--tussock)' }}><div className="text-sm font-bold" style={{ color: 'var(--ink)' }}>{w.name}</div><div className="text-xs" style={{ color: 'var(--glacier)' }}>{w.detail}</div></div>)}</div>
       <InfoBanner icon={AlertTriangle}>Cuidado con <strong>backpackercar.co.nz</strong> — reportado repetidamente como estafa.</InfoBanner>
+      <SubHeading icon={Car}>O alquilarla, si tu viaje es corto</SubHeading>
+      <p className="text-xs mb-2" style={{ color: 'var(--glacier)' }}>Para menos de 3-4 semanas suele compensar más que comprar y revender — ver el módulo de "Furgo vs. piso" en el blog para la comparación completa.</p>
+      <div className="space-y-2 mb-6">{VAN_RENTAL_COMPANIES.map((r) => <ProviderCard key={r.name} p={{ name: r.name, tag: 'Alquiler', detail: r.detail, link: r.link }} />)}</div>
       <SubHeading icon={ListChecks}>Checklist: qué debe tener (para vivir bien)</SubHeading>
       <ul className="text-xs space-y-1.5" style={{ color: 'var(--ink)' }}>{VAN_CHECKLIST_ITEMS.map((it, i) => <li key={i} className="flex gap-2"><CheckCircle2 size={13} className="shrink-0 mt-0.5" style={{ color: 'var(--pounamu)' }} />{it}</li>)}</ul>
     </div>
@@ -957,7 +966,7 @@ function VehicleModule({ checked, toggle }) {
   useDocumentTitle('Furgo, transporte y vida en NZ');
   const items = [
     { id: 'documentacion', title: 'Documentación y revisiones', icon: FileText, teaser: 'WOF, REGO, RUC, COF, Self-Contained y seguro' },
-    { id: 'comprar-furgo', title: 'Comprar la furgo', icon: ShoppingBag, teaser: 'Dónde buscar y qué debe tener' },
+    { id: 'comprar-furgo', title: 'Comprar o alquilar furgo', icon: ShoppingBag, teaser: 'Dónde buscar, alquiler y qué debe tener' },
     { id: 'moverte', title: 'Moverte por NZ', icon: Waves, teaser: 'Ferry y reposicionamiento de coches' },
     { id: 'ahorra', title: 'Ahorra en el día a día', icon: PiggyBank, teaser: 'Supermercados, segunda mano y consejos reales' },
     { id: 'actividades-envios', title: 'Actividades y envíos', icon: Ticket, teaser: 'Descuentos y cómo mandar maletas a casa' },
@@ -1109,3 +1118,4 @@ export default function WHVDashboard() {
     </BrowserRouter>
   );
 }
+
